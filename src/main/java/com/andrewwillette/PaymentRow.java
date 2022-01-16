@@ -18,8 +18,8 @@ public class PaymentRow extends SpreadsheetRow {
     private final double groceries;
     private final double extraPaidByMe;
     private final String extraPaidByMeDescription;
-    private final double extraPaidByRoomate;
-    private final String extraPaidByRoomateDescription;
+    private final double extraPaidByRoommate;
+    private final String extraPaidByRoommateDescription;
 
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -36,12 +36,21 @@ public class PaymentRow extends SpreadsheetRow {
         this.groceries = parseValueAsDouble(spreadsheetRow, 5);
         this.extraPaidByMe = parseValueAsDouble(spreadsheetRow, 6);
         this.extraPaidByMeDescription = parseValueAsString(spreadsheetRow, 7);
-        this.extraPaidByRoomate = parseValueAsDouble(spreadsheetRow, 8);
-        this.extraPaidByRoomateDescription = parseValueAsString(spreadsheetRow, 9);
+        this.extraPaidByRoommate = parseValueAsDouble(spreadsheetRow, 8);
+        this.extraPaidByRoommateDescription = parseValueAsString(spreadsheetRow, 9);
     }
 
+    /**
+     * What we came for.
+     * @return what's owed
+     */
     public double getRoomatesPayment() {
-        return rent/2 + electricity/2 + groceries/2 + extraPaidByMe /2 - internet/2;
+        return rent/2
+                + electricity/2
+                + groceries/2
+                + extraPaidByMe/2
+                - internet/2
+                - extraPaidByRoommate /2;
     }
 
     public Date getDate() {
@@ -75,8 +84,8 @@ public class PaymentRow extends SpreadsheetRow {
                 ", groceries=" + groceries +
                 ", extraPaidByMe=" + extraPaidByMe +
                 ", extraPaidByMeDescription=" + extraPaidByMeDescription +
-                ", extraPaidByRoomate=" + extraPaidByRoomate +
-                ", extraPaidByRoomateDescription=" + extraPaidByRoomateDescription +
+                ", extraPaidByRoommate=" + extraPaidByRoommate +
+                ", extraPaidByRoommateDescription=" + extraPaidByRoommateDescription +
                 '}';
     }
 
@@ -84,17 +93,42 @@ public class PaymentRow extends SpreadsheetRow {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         PaymentRow that = (PaymentRow) o;
-        return Double.compare(that.rent, rent) == 0
-                && Double.compare(that.creditCard, creditCard) == 0
-                && Double.compare(that.electricity, electricity) == 0
-                && Double.compare(that.internet, internet) == 0
-                && date.equals(that.date)
-                && Objects.equals(DATE_FORMAT, that.DATE_FORMAT);
+
+        if (Double.compare(that.creditCard, creditCard) != 0) return false;
+        if (Double.compare(that.rent, rent) != 0) return false;
+        if (Double.compare(that.electricity, electricity) != 0) return false;
+        if (Double.compare(that.internet, internet) != 0) return false;
+        if (Double.compare(that.groceries, groceries) != 0) return false;
+        if (Double.compare(that.extraPaidByMe, extraPaidByMe) != 0) return false;
+        if (Double.compare(that.extraPaidByRoommate, extraPaidByRoommate) != 0) return false;
+        if (!date.equals(that.date)) return false;
+        if (!extraPaidByMeDescription.equals(that.extraPaidByMeDescription)) return false;
+        return extraPaidByRoommateDescription.equals(that.extraPaidByRoommateDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, rent, creditCard, electricity, internet, DATE_FORMAT);
+        int result;
+        long temp;
+        result = date.hashCode();
+        temp = Double.doubleToLongBits(creditCard);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(rent);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(electricity);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(internet);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(groceries);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(extraPaidByMe);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + extraPaidByMeDescription.hashCode();
+        temp = Double.doubleToLongBits(extraPaidByRoommate);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + extraPaidByRoommateDescription.hashCode();
+        return result;
     }
 }

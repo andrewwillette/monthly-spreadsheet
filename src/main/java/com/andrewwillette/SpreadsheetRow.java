@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * abstract class containing utility methods for interacting with google api spreadsheet rows
+ * exposes some utility methods for interacting with google api spreadsheet rows
  */
 public abstract class SpreadsheetRow {
 

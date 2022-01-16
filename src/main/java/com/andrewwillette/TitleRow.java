@@ -31,6 +31,5 @@ public class TitleRow {
         this.columnI = spreadsheetRow.get(0) != null ? (String)spreadsheetRow.get(8) : "";
         this.columnJ = spreadsheetRow.get(0) != null ? (String)spreadsheetRow.get(9) : "";
         this.columnK = spreadsheetRow.get(0) != null ? (String)spreadsheetRow.get(10) : "";
-
     }
 }
